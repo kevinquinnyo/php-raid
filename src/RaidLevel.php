@@ -3,9 +3,9 @@ namespace kevinquinnyo\Raid;
 
 class RaidLevel
 {
-    protected $disks = null;
+    protected $drives = null;
 
-    public function __construct(int $disks)
+    public function __construct(int $drives)
     {
-        $this->disks = $disks;
+        $this->drives = $drives;
     }
