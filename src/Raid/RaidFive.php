@@ -21,7 +21,6 @@ class RaidFive extends AbstractRaid
     public function getCapacity()
     {
         $total = $this->getTotalCapacity();
-        $count = $this->getDriveCount(false);
         $min = $this->getMinimumDriveSize();
 
         return $total === 0 ? $total : ($total - $min);
