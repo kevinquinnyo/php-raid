@@ -2,6 +2,7 @@
 namespace kevinquinnyo\Raid;
 
 use kevinquinnyo\Raid\Drive;
+use RuntimeException;
 
 abstract class AbstractRaid
 {
@@ -28,7 +29,7 @@ abstract class AbstractRaid
     public function addDrive($drive)
     {
         $drives = $this->drives;
-        $drives += (array)$drive;
+        $drives[] = $drive;
 
         return $this->setDrives($drives);
     }
@@ -81,10 +82,9 @@ abstract class AbstractRaid
 
     public function validate($drives)
     {
-        $drives = (array)$drives;
         foreach ($drives as $drive) {
             if (($drive instanceof Drive) === false) {
-                return false;
+                throw new RuntimeException(sprintf('Drive must be an instance of %s', Drive::class));
             }
         }
 
