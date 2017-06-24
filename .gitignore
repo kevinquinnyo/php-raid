@@ -1,1 +1,4 @@
-/vendor/
+build/
+vendor/
+phpcs.xml
+phpunit.xml
