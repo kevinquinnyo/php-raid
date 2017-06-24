@@ -20,9 +20,6 @@ class RaidZero extends AbstractRaid
 
     public function getCapacity()
     {
-        $total = $this->getTotalCapacity();
-        $count = $this->getDriveCount(false);
-
-        return $total;
+        return $this->getTotalCapacity();
     }
 }
