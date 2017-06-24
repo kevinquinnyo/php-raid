@@ -22,6 +22,10 @@ class AbstractRaidTest extends TestCase
         $this->assertSame(1024, $raidClass->getMinimumDriveSize());
     }
 
+    /**
+    *
+    * @group failing
+    */
     public function testAddDrive()
     {
         $drives = [
@@ -30,6 +34,7 @@ class AbstractRaidTest extends TestCase
         ];
         $newDrive = new Drive(1024, 'ssd');
         $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $concreteRaid->setDrives($drives);
         $concreteRaid->addDrive($newDrive);
         $drives = $concreteRaid->getDrives();
 
