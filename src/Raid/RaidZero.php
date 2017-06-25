@@ -8,6 +8,8 @@ class RaidZero extends AbstractRaid
 {
     protected $drives = [];
     protected $minimumDrives = 2;
+    protected $mirrored = false;
+    protected $striped = true;
 
     public function __construct($drives = [])
     {

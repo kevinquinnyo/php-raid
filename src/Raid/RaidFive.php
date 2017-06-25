@@ -8,6 +8,9 @@ class RaidFive extends AbstractRaid
 {
     protected $drives = [];
     protected $minimumDrives = 3;
+    protected $mirrored = false;
+    protected $parity = true;
+    protected $striped = true;
 
     public function __construct($drives = [])
     {
