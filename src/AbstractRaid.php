@@ -7,6 +7,7 @@ use RuntimeException;
 abstract class AbstractRaid
 {
     protected $drives = [];
+    protected $hotSpares = [];
 
     public function getLevel()
     {
@@ -16,6 +17,11 @@ abstract class AbstractRaid
     public function getDrives()
     {
         return $this->drives;
+    }
+
+    public function getHotSpares()
+    {
+        return $this->hotSpares;
     }
 
     public function setDrives($drives)
@@ -32,6 +38,14 @@ abstract class AbstractRaid
         $drives[] = $drive;
 
         return $this->setDrives($drives);
+    }
+
+    public function addHotSpare($hotSpare)
+    {
+        $hotSpares = $this->hotSpares;
+        $hotSpares[] = $hotSpare;
+
+        return $this;
     }
 
     abstract public function getCapacity();
