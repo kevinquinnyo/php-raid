@@ -45,6 +45,8 @@ abstract class AbstractRaid
         $hotSpares = $this->hotSpares;
         $hotSpares[] = $hotSpare;
 
+        $this->validate($hotSpares);
+
         return $this;
     }
 
