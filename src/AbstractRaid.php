@@ -10,7 +10,7 @@ abstract class AbstractRaid
 
     public function getLevel()
     {
-        return $this->level;
+        return static::LEVEL;
     }
 
     public function getDrives()
