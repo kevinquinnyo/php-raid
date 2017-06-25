@@ -41,6 +41,9 @@ abstract class AbstractRaid
         $floor = null;
 
         foreach ($this->drives as $drive) {
+            if ($drive->isHotSpare() === true) {
+                continue;
+            }
             if (isset($floor) === false) {
                 $floor = $drive->getCapacity();
             }
