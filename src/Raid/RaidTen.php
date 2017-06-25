@@ -8,6 +8,7 @@ class RaidTen extends AbstractRaid
 {
     const LEVEL = 10;
     protected $drives = [];
+    protected $hotSpares = [];
     protected $minimumDrives = 4;
     protected $mirrored = true;
 
