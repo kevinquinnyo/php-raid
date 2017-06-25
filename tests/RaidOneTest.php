@@ -28,4 +28,9 @@ class RaidOneTest extends TestCase
         $raidOne = new RaidOne($drives);
         $this->assertSame(1024, $raidOne->getCapacity());
     }
+    public function testGetLevel()
+    {
+        $raidOne = new RaidOne();
+        $this->assertSame(1, $raidOne->getLevel());
+    }
 }

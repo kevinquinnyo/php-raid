@@ -6,6 +6,7 @@ use kevinquinnyo\Raid\Drive;
 
 class RaidFive extends AbstractRaid
 {
+    const LEVEL = 5;
     protected $drives = [];
     protected $minimumDrives = 3;
     protected $mirrored = false;

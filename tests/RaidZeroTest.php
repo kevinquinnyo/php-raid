@@ -28,4 +28,9 @@ class RaidZeroTest extends TestCase
         $raidZero = new RaidZero($drives);
         $this->assertSame(3072, $raidZero->getCapacity());
     }
+    public function testGetLevel()
+    {
+        $raidZero = new RaidZero();
+        $this->assertSame(0, $raidZero->getLevel());
+    }
 }
