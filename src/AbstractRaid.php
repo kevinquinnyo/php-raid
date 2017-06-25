@@ -40,7 +40,7 @@ abstract class AbstractRaid
         return $this->setDrives($drives);
     }
 
-    public function addHotSpare($hotSpare)
+    public function addHotSpare(Drive $hotSpare)
     {
         $hotSpares = $this->hotSpares;
         $hotSpares[] = $hotSpare;
