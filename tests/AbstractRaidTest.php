@@ -17,7 +17,7 @@ class AbstractRaidTest extends TestCase
         ];
 
         $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
-        $raidClass = new $concreteRaid($drives);
+        $raidClass = new $concreteRaid();
         $raidClass->setDrives($drives);
         $this->assertSame(1024, $raidClass->getMinimumDriveSize());
     }
