@@ -22,10 +22,6 @@ class AbstractRaidTest extends TestCase
         $this->assertSame(1024, $raidClass->getMinimumDriveSize());
     }
 
-    /**
-    *
-    * @group failing
-    */
     public function testAddDrive()
     {
         $drives = [
