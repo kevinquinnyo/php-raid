@@ -21,8 +21,13 @@ class RaidTen extends AbstractRaid
         $this->drives = $drives;
     }
 
-    public function getCapacity()
+    public function getCapacity($human = false)
     {
-        return $this->getTotalCapacity() / 2;
+        $result = $this->getTotalCapacity() / 2;
+        if ($human === true) {
+            return Number::toReadableSize($result);
+        }   
+
+        return $result;
     }
 }

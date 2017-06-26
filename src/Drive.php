@@ -1,6 +1,8 @@
 <?php
 namespace kevinquinnyo\Raid;
 
+use Cake\I18n\Number;
+use Cake\Utility\Text;
 use InvalidArgumentException;
 
 class Drive
@@ -9,9 +11,9 @@ class Drive
     protected $type = null;
     protected $hotSpare = false;
 
-    public function __construct(int $capacity, string $type, $hotSpare = false)
+    public function __construct($capacity, string $type, $hotSpare = false)
     {
-        $this->capacity = $capacity;
+        $this->capacity = Text::parseFileSize($capacity);
         $this->validate($type);
         $this->type = $type;
         $this->hotSpare = $hotSpare;
@@ -26,8 +28,12 @@ class Drive
         }
     }
 
-    public function getCapacity()
+    public function getCapacity($human = false)
     {
+        if ($human === true) {
+            return Number::toReadableSize($this->capacity);
+        }
+
         return $this->capacity;
     }
 
