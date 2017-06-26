@@ -23,13 +23,16 @@ class RaidFive extends AbstractRaid
         $this->drives = $drives;
     }
 
-    public function getCapacity($human = false)
+    public function getCapacity($options = [])
     {
+        $options = [
+            'human' => false,
+        ];
         $total = $this->getTotalCapacity();
         $min = $this->getMinimumDriveSize();
         $result = $total === 0 ? $total : ($total - $min);
         
-        if ($human === true) {
+        if ($options['human'] === true) {
             return Number::toReadableSize($result);
         }   
 

@@ -25,8 +25,8 @@ class RaidSixTest extends TestCase
             new Drive(1024, 'ssd'),
             new Drive(1024, 'ssd'),
             new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd', true),
-            new Drive(1024, 'ssd', true),
+            new Drive(1024, 'ssd', ['hotSpare' => true]),
+            new Drive(1024, 'ssd', ['hotSpare' => true]),
         ];
         $raidSix = new RaidSix($drives);
         $this->assertSame(2048, $raidSix->getCapacity());

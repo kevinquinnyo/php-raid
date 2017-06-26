@@ -22,8 +22,8 @@ class RaidZeroTest extends TestCase
             new Drive(1024, 'ssd'),
             new Drive(1024, 'ssd'),
             new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd', true),
-            new Drive(1024, 'ssd', true),
+            new Drive(1024, 'ssd', ['hotSpare' => true]),
+            new Drive(1024, 'ssd', ['hotSpare' => true]),
         ];
         $raidZero = new RaidZero($drives);
         $this->assertSame(3072, $raidZero->getCapacity());

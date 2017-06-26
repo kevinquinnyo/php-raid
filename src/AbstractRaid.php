@@ -51,7 +51,7 @@ abstract class AbstractRaid
         return $this;
     }
 
-    abstract public function getCapacity($human = false);
+    abstract public function getCapacity($options = []);
 
     public function getMinimumDriveSize()
     {
@@ -86,15 +86,23 @@ abstract class AbstractRaid
         return $total;
     }
 
-    public function getTotalCapacity($withHotSpares = false)
+    public function getTotalCapacity($options = [])
     {
+        $options += [
+            'human' => false,
+            'withHotSpares' => false,
+        ];
         $total = 0;
         $min = $this->getMinimumDriveSize();
 
         foreach ($this->drives as $drive) {
-            if ($withHotSpares === false && $drive->isHotSpare() === false) {
+            if ($options['withHotSpares'] === false && $drive->isHotSpare() === false) {
                 $total += $min;
             }
+        }
+
+        if ($options['human'] === true) {
+            $total = Number::toReadableSize($total);
         }
 
         return $total;

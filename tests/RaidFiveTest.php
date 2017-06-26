@@ -23,8 +23,8 @@ class RaidFiveTest extends TestCase
             new Drive(1024, 'ssd'),
             new Drive(1024, 'ssd'),
             new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd', true),
-            new Drive(1024, 'ssd', true),
+            new Drive(1024, 'ssd', ['hotSpare' => true]),
+            new Drive(1024, 'ssd', ['hotSpare' => true]),
         ];
         $raidFive = new RaidFive($drives);
         $this->assertSame(2048, $raidFive->getCapacity());
