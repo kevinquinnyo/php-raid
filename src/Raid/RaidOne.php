@@ -22,8 +22,12 @@ class RaidOne extends AbstractRaid
         $this->drives = $drives;
     }
 
-    public function getCapacity()
+    public function getCapacity($human = false)
     {
+        if ($human === true) {
+            return Number::toReadableSize($this->getMinimumDriveSize());
+        }
+
         return $this->getMinimumDriveSize();
     }
 }

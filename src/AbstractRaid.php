@@ -1,6 +1,7 @@
 <?php
 namespace kevinquinnyo\Raid;
 
+use Cake\I18n\Number;
 use kevinquinnyo\Raid\Drive;
 use RuntimeException;
 
@@ -50,7 +51,7 @@ abstract class AbstractRaid
         return $this;
     }
 
-    abstract public function getCapacity();
+    abstract public function getCapacity($human = false);
 
     public function getMinimumDriveSize()
     {

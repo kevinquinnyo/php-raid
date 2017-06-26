@@ -22,8 +22,14 @@ class RaidZero extends AbstractRaid
         $this->drives = $drives;
     }
 
-    public function getCapacity()
+    public function getCapacity($human = false)
     {
-        return $this->getTotalCapacity();
+        $result = $this->getTotalCapacity();
+
+        if ($human === true) {
+            return Number::toReadableSize($result);
+        }   
+
+        return $result;
     }
 }

@@ -22,11 +22,15 @@ class RaidSix extends AbstractRaid
         $this->drives = $drives;
     }
 
-    public function getCapacity()
+    public function getCapacity($human = false)
     {
         $total = $this->getTotalCapacity();
         $count = $this->getDriveCount(false);
+        $result = $total === 0 ? $total : $total / 2;
+        if ($human === true) {
+            return Number::toReadableSize($result);
+        }   
 
-        return $total === 0 ? $total : $total / 2;
+        return $result;
     }
 }
