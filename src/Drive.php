@@ -11,12 +11,15 @@ class Drive
     protected $type = null;
     protected $hotSpare = false;
 
-    public function __construct($capacity, string $type, $hotSpare = false)
+    public function __construct($capacity, string $type, $options = [])
     {
+        $options += [
+            'hotSpare' => false,
+        ];
         $this->capacity = Text::parseFileSize($capacity);
         $this->validate($type);
         $this->type = $type;
-        $this->hotSpare = $hotSpare;
+        $this->hotSpare = $options['hotSpare'];
     }
 
     protected function validate($type)
@@ -28,9 +31,12 @@ class Drive
         }
     }
 
-    public function getCapacity($human = false)
+    public function getCapacity($options = [])
     {
-        if ($human === true) {
+        $options += [
+            'human' => false,
+        ];
+        if ($options['human'] === true) {
             return Number::toReadableSize($this->capacity);
         }
 

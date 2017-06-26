@@ -22,11 +22,14 @@ class RaidZero extends AbstractRaid
         $this->drives = $drives;
     }
 
-    public function getCapacity($human = false)
+    public function getCapacity($options = [])
     {
+        $options += [
+            'human' => false,
+        ];
         $result = $this->getTotalCapacity();
 
-        if ($human === true) {
+        if ($options['human'] === true) {
             return Number::toReadableSize($result);
         }   
 

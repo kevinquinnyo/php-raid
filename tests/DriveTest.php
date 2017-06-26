@@ -15,7 +15,7 @@ class DriveTest extends TestCase
     public function testGetCapacityWithHuman()
     {
         $drive = new Drive('1k', 'ssd');
-        $this->assertSame('1 KB', $drive->getCapacity(true));
+        $this->assertSame('1 KB', $drive->getCapacity(['human' => true]));
     }
 
     public function testGetType()

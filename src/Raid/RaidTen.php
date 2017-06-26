@@ -21,10 +21,13 @@ class RaidTen extends AbstractRaid
         $this->drives = $drives;
     }
 
-    public function getCapacity($human = false)
+    public function getCapacity($options = [])
     {
+        $options = [
+            'human' => false,
+        ];
         $result = $this->getTotalCapacity() / 2;
-        if ($human === true) {
+        if ($options['human'] === true) {
             return Number::toReadableSize($result);
         }   
 

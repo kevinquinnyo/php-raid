@@ -22,8 +22,8 @@ class RaidOneTest extends TestCase
             new Drive(1024, 'ssd'),
             new Drive(1024, 'ssd'),
             new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd', true),
-            new Drive(1024, 'ssd', true),
+            new Drive(1024, 'ssd', ['hotSpare' => true]),
+            new Drive(1024, 'ssd', ['hotSpare' => true]),
         ];
         $raidOne = new RaidOne($drives);
         $this->assertSame(1024, $raidOne->getCapacity());
