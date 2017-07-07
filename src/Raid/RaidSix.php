@@ -1,6 +1,7 @@
 <?php
 namespace kevinquinnyo\Raid\Raid;
 
+use Cake\I18n\Number;
 use kevinquinnyo\Raid\AbstractRaid;
 use kevinquinnyo\Raid\Drive;
 
@@ -24,7 +25,7 @@ class RaidSix extends AbstractRaid
 
     public function getCapacity($options = [])
     {
-        $options = [
+        $options += [
             'human' => false,
         ];
         $total = $this->getTotalCapacity();
