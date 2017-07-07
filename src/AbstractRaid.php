@@ -110,10 +110,15 @@ abstract class AbstractRaid
 
     public function validate($drives)
     {
+        $identifiers = [];
         foreach ($drives as $drive) {
             if (($drive instanceof Drive) === false) {
                 throw new RuntimeException(sprintf('Drive must be an instance of %s', Drive::class));
             }
+            if (in_array($drive->identifier, $identifiers)) {
+                throw new RuntimeException(sprintf('Drive identifier %s is already present.  Drive Identifiers must be unique in a RAID.', $drive->identifier));
+            }
+            $identifiers[] = $drive->identifier;
         }
 
         return true;
