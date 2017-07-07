@@ -20,6 +20,7 @@ class Drive
         $this->capacity = Text::parseFileSize($capacity);
         $this->validate($type);
         $this->type = $type;
+        $this->identifier = $identifier;
         $this->hotSpare = $options['hotSpare'];
     }
 
