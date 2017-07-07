@@ -15,6 +15,7 @@ class RaidOneTest extends TestCase
         ];
         $raidOne = new RaidOne($drives);
         $this->assertSame(1024, $raidOne->getCapacity());
+        $this->assertSame('1 KB', $raidOne->getCapacity(['human' => true]));
     }
     public function testGetCapacityWithHotSpares()
     {

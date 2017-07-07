@@ -15,6 +15,8 @@ class RaidZeroTest extends TestCase
         ];
         $raidZero = new RaidZero($drives);
         $this->assertSame(2048, $raidZero->getCapacity());
+        $this->assertSame('2 KB', $raidZero->getCapacity(['human' => true]));
+
     }
     public function testGetCapacityWithHotSpares()
     {

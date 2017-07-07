@@ -16,6 +16,7 @@ class RaidFiveTest extends TestCase
         ];
         $raidFive = new RaidFive($drives);
         $this->assertSame(2048, $raidFive->getCapacity());
+        $this->assertSame('2 KB', $raidFive->getCapacity(['human' => true]));
     }
     public function testGetCapacityWithHotSpares()
     {
