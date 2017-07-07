@@ -10,8 +10,9 @@ class Drive
     protected $capacity = null;
     protected $type = null;
     protected $hotSpare = false;
+    protected $identifier = null;
 
-    public function __construct($capacity, string $type, $options = [])
+    public function __construct($capacity, string $type, string $identifier, $options = [])
     {
         $options += [
             'hotSpare' => false,
@@ -19,7 +20,20 @@ class Drive
         $this->capacity = Text::parseFileSize($capacity);
         $this->validate($type);
         $this->type = $type;
+        $this->identifier = $identifier;
         $this->hotSpare = $options['hotSpare'];
+    }
+
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier(string $identifier)
+    {
+        $this->identifier = $identifier;
+
+        return $this;
     }
 
     protected function validate($type)
