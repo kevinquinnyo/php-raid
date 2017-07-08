@@ -117,6 +117,12 @@ abstract class AbstractRaid
         return $floor;
     }
 
+    public function getTotalDriveCount()
+    {
+        return count($this->getDrives()) + count($this->getHotSpares());
+    }
+
+    /* @deprecated - there's no point when you can just do (count)$raid->getDrives() and (count)$raid->getHostSpares() */
     public function getDriveCount($withHotSpares = true)
     {
         $total = 0;
