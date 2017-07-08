@@ -9,6 +9,17 @@ abstract class AbstractRaid
 {
     protected $drives = [];
     protected $hotSpares = [];
+    protected $mirrored = false;
+
+    public function validDriveCount()
+    {
+        $count = count($this->getDrives());
+        if ($count < $this->minimumDrives || ($this->mirrored === true && ($count % 2) === 0)) {
+            return false;
+        }
+
+        return true;
+    }
 
     public function getLevel()
     {
