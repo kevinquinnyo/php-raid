@@ -10,8 +10,8 @@ class RaidZeroTest extends TestCase
     public function testGetCapacity()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
         ];
         $raidZero = new RaidZero($drives);
         $this->assertSame(2048, $raidZero->getCapacity());
@@ -21,11 +21,11 @@ class RaidZeroTest extends TestCase
     public function testGetCapacityWithHotSpares()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd', ['hotSpare' => true]),
-            new Drive(1024, 'ssd', ['hotSpare' => true]),
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
+            new Drive(1024, 'ssd', 3),
+            new Drive(1024, 'ssd', 4, ['hotSpare' => true]),
+            new Drive(1024, 'ssd', 5, ['hotSpare' => true]),
         ];
         $raidZero = new RaidZero($drives);
         $this->assertSame(3072, $raidZero->getCapacity());
