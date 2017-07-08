@@ -15,8 +15,8 @@ class RaidFactoryTest extends TestCase
     public function testCreateRaidZero()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
         ];
         $factory = new RaidFactory();
         $raid = $factory->create(0, $drives);
@@ -25,8 +25,8 @@ class RaidFactoryTest extends TestCase
     public function testCreateRaidOne()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
         ];
         $factory = new RaidFactory();
         $raid = $factory->create(1, $drives);
@@ -35,8 +35,8 @@ class RaidFactoryTest extends TestCase
     public function testCreateRaidFive()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
         ];
         $factory = new RaidFactory();
         $raid = $factory->create(5, $drives);
@@ -45,8 +45,8 @@ class RaidFactoryTest extends TestCase
     public function testCreateRaidSix()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
         ];
         $factory = new RaidFactory();
         $raid = $factory->create(6, $drives);
@@ -55,8 +55,8 @@ class RaidFactoryTest extends TestCase
     public function testCreateRaidTen()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
         ];
         $factory = new RaidFactory();
         $raid = $factory->create(10, $drives);

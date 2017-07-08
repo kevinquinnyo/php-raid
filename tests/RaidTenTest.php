@@ -10,10 +10,10 @@ class RaidTenTest extends TestCase
     public function testGetCapacity()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
+            new Drive(1024, 'ssd', 3),
+            new Drive(1024, 'ssd', 4),
         ];
         $raidTen = new RaidTen($drives);
         $this->assertSame(2048, $raidTen->getCapacity());
