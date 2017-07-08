@@ -10,11 +10,44 @@ abstract class AbstractRaid
     protected $drives = [];
     protected $hotSpares = [];
     protected $mirrored = false;
+    protected $parity = false;
+    protected $striped = false;
+    protected $minimumDrives = 1;
+
+    public function isMirrored()
+    {
+        return $this->mirrored;
+    }
+
+    public function getMinimumDrives()
+    {
+        return $this->minimumDrives;
+    }
+
+    public function isStriped()
+    {
+        return $this->striped;
+    }
+
+    public function hasMinimumDriveCount()
+    {
+        return $this->getDriveCount(false) >= $this->minimumDrives;
+    }
+
+    public function isUnevenMirror()
+    {
+        if ($this->mirrored === false) {
+            return false;
+        }
+
+        $isOdd = ($this->getDriveCount(false) % 2) === 1;
+
+        return $isOdd;
+    }
 
     public function validDriveCount()
     {
-        $count = count($this->getDrives());
-        if ($count < $this->minimumDrives || ($this->mirrored === true && ($count % 2) === 0)) {
+        if ($this->hasMinimumDriveCount() === false || $this->isUnevenMirror() === true) {
             return false;
         }
 

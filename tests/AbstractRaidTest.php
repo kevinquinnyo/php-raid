@@ -5,6 +5,7 @@ use \PHPUnit\Framework\TestCase;
 use \kevinquinnyo\Raid\Drive;
 use \kevinquinnyo\Raid\AbstractRaid;
 use \kevinquinnyo\Raid\Raid\RaidFive;
+use ReflectionClass;
 
 class AbstractRaidTest extends TestCase
 {
@@ -47,19 +48,20 @@ class AbstractRaidTest extends TestCase
         ];
         $newDrive = new Drive(1024, 'ssd', 3);
         $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
-        $concreteRaid->setDrives($drives);
-        $concreteRaid->addDrive($newDrive);
-        $drives = $concreteRaid->getDrives();
+        $raidClass = new $concreteRaid();
+        $raidClass->setDrives($drives);
+        $raidClass->addDrive($newDrive);
+        $drives = $raidClass->getDrives();
 
         $this->assertSame(3, count($drives));
     }
 
-    public function testValidDriveCount()
+    public function testValidDriveCountWithoutEnoughDrives()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(2048, 'ssd'),
-            new Drive(2048, 'ssd'),
+            new Drive(1024, 'ssd', 1),
+            new Drive(2048, 'ssd', 2),
+            new Drive(2048, 'ssd', 3),
         ];
 
         $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
@@ -68,5 +70,45 @@ class AbstractRaidTest extends TestCase
 
         $raidClass->setDrives($drives);
         $this->assertFalse($raidClass->validDriveCount());
+    }
+
+    public function testValidDriveCountWithOddDrives()
+    {
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(2048, 'ssd', 2),
+            new Drive(2048, 'ssd', 3),
+            new Drive(2048, 'ssd', 4),
+            new Drive(2048, 'ssd', 5),
+        ];
+
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+        /* Basically this is a Raid 10 with 5 drives */
+        $this->setProtectedProperty($raidClass, 'minimumDrives', 4); 
+        $this->setProtectedProperty($raidClass, 'mirrored', true); 
+
+        $raidClass->setDrives($drives);
+        $this->assertFalse($raidClass->validDriveCount());
+    }
+
+    public function testValidDriveCountWithEvenDrivesPlusSpare()
+    {
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(2048, 'ssd', 2),
+            new Drive(2048, 'ssd', 3),
+            new Drive(2048, 'ssd', 4),
+            new Drive(2048, 'ssd', 5, ['hotSpare' => true]),
+        ];
+
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+        /* Basically this is a Raid 10 with 4 drives and one hot spare */
+        $this->setProtectedProperty($raidClass, 'minimumDrives', 4); 
+        $this->setProtectedProperty($raidClass, 'mirrored', true); 
+
+        $raidClass->setDrives($drives);
+        $this->assertTrue($raidClass->validDriveCount());
     }
 }
