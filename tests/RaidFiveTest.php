@@ -10,9 +10,9 @@ class RaidFiveTest extends TestCase
     public function testGetCapacity()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
+            new Drive(1024, 'ssd', 3),
         ];
         $raidFive = new RaidFive($drives);
         $this->assertSame(2048, $raidFive->getCapacity());
@@ -21,11 +21,11 @@ class RaidFiveTest extends TestCase
     public function testGetCapacityWithHotSpares()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd', ['hotSpare' => true]),
-            new Drive(1024, 'ssd', ['hotSpare' => true]),
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
+            new Drive(1024, 'ssd', 3),
+            new Drive(1024, 'ssd', 4, ['hotSpare' => true]),
+            new Drive(1024, 'ssd', 5, ['hotSpare' => true]),
         ];
         $raidFive = new RaidFive($drives);
         $this->assertSame(2048, $raidFive->getCapacity());

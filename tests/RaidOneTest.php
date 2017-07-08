@@ -10,8 +10,8 @@ class RaidOneTest extends TestCase
     public function testGetCapacity()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
         ];
         $raidOne = new RaidOne($drives);
         $this->assertSame(1024, $raidOne->getCapacity());
@@ -20,11 +20,11 @@ class RaidOneTest extends TestCase
     public function testGetCapacityWithHotSpares()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd', ['hotSpare' => true]),
-            new Drive(1024, 'ssd', ['hotSpare' => true]),
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
+            new Drive(1024, 'ssd', 3),
+            new Drive(1024, 'ssd', 4, ['hotSpare' => true]),
+            new Drive(1024, 'ssd', 5, ['hotSpare' => true]),
         ];
         $raidOne = new RaidOne($drives);
         $this->assertSame(1024, $raidOne->getCapacity());

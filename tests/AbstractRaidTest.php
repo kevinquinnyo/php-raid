@@ -28,9 +28,9 @@ class AbstractRaidTest extends TestCase
     public function testGetMinimumDriveSize()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(2048, 'ssd'),
-            new Drive(2048, 'ssd'),
+            new Drive(1024, 'ssd', 1),
+            new Drive(2048, 'ssd', 2),
+            new Drive(2048, 'ssd', 3),
         ];
 
         $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
@@ -42,10 +42,10 @@ class AbstractRaidTest extends TestCase
     public function testAddDrive()
     {
         $drives = [
-            new Drive(1024, 'ssd'),
-            new Drive(1024, 'ssd'),
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
         ];
-        $newDrive = new Drive(1024, 'ssd');
+        $newDrive = new Drive(1024, 'ssd', 3);
         $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
         $concreteRaid->setDrives($drives);
         $concreteRaid->addDrive($newDrive);
