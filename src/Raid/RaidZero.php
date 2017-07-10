@@ -32,7 +32,7 @@ class RaidZero extends AbstractRaid
 
         if ($options['human'] === true) {
             return Number::toReadableSize($result);
-        }   
+        }
 
         return $result;
     }

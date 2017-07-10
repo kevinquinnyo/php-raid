@@ -32,10 +32,10 @@ class RaidFive extends AbstractRaid
         $total = $this->getTotalCapacity();
         $min = $this->getMinimumDriveSize();
         $result = $total === 0 ? $total : ($total - $min);
-        
+
         if ($options['human'] === true) {
             return Number::toReadableSize($result);
-        }   
+        }
 
         return $result;
     }

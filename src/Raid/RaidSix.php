@@ -33,7 +33,7 @@ class RaidSix extends AbstractRaid
         $result = $total === 0 ? $total : $total / 2;
         if ($options['human'] === true) {
             return Number::toReadableSize($result);
-        }   
+        }
 
         return $result;
     }
