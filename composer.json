@@ -26,5 +26,13 @@
     "psr-4": {
       "kevinquinnyo\\Raid\\Test\\": "tests"
     }
+  },
+  "scripts": {
+    "cs": "phpcs --colors -p --standard=phpcs.xml.dist",
+    "cs-fix": "phpcbf --colors --standard=phpcs.xml.dist",
+    "test": "phpunit --colors=always --configuration phpunit.xml.dist"
+  },
+  "config": {
+    "sort-packages": true
   }
 }
