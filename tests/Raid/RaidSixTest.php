@@ -1,5 +1,5 @@
 <?php
-namespace kevinquinnyo\Raid\Test;
+namespace kevinquinnyo\Raid\Test\Raid;
 
 use \PHPUnit\Framework\TestCase;
 use \kevinquinnyo\Raid\Drive;
