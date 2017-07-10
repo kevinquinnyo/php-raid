@@ -30,7 +30,7 @@ class RaidTen extends AbstractRaid
         $result = $this->getTotalCapacity() / 2;
         if ($options['human'] === true) {
             return Number::toReadableSize($result);
-        }   
+        }
 
         return $result;
     }

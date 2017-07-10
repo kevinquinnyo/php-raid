@@ -66,7 +66,7 @@ class AbstractRaidTest extends TestCase
 
         $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
         $raidClass = new $concreteRaid();
-        $this->setProtectedProperty($raidClass, 'minimumDrives', 4); 
+        $this->setProtectedProperty($raidClass, 'minimumDrives', 4);
 
         $raidClass->setDrives($drives);
         $this->assertFalse($raidClass->validDriveCount());
@@ -85,8 +85,8 @@ class AbstractRaidTest extends TestCase
         $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
         $raidClass = new $concreteRaid();
         /* Basically this is a Raid 10 with 5 drives */
-        $this->setProtectedProperty($raidClass, 'minimumDrives', 4); 
-        $this->setProtectedProperty($raidClass, 'mirrored', true); 
+        $this->setProtectedProperty($raidClass, 'minimumDrives', 4);
+        $this->setProtectedProperty($raidClass, 'mirrored', true);
 
         $raidClass->setDrives($drives);
         $this->assertFalse($raidClass->validDriveCount());
@@ -105,8 +105,8 @@ class AbstractRaidTest extends TestCase
         $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
         $raidClass = new $concreteRaid();
         /* Basically this is a Raid 10 with 4 drives and one hot spare */
-        $this->setProtectedProperty($raidClass, 'minimumDrives', 4); 
-        $this->setProtectedProperty($raidClass, 'mirrored', true); 
+        $this->setProtectedProperty($raidClass, 'minimumDrives', 4);
+        $this->setProtectedProperty($raidClass, 'mirrored', true);
 
         $raidClass->setDrives($drives);
         $this->assertTrue($raidClass->validDriveCount());

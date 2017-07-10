@@ -1,22 +1,21 @@
 <?php
-namespace kevinquinnyo\Raid\Test;
+namespace kevinquinnyo\Raid\Test\Raid;
 
 use \PHPUnit\Framework\TestCase;
 use \kevinquinnyo\Raid\Drive;
-use \kevinquinnyo\Raid\Raid\RaidFive;
+use \kevinquinnyo\Raid\Raid\RaidOne;
 
-class RaidFiveTest extends TestCase
+class RaidOneTest extends TestCase
 {
     public function testGetCapacity()
     {
         $drives = [
             new Drive(1024, 'ssd', 1),
             new Drive(1024, 'ssd', 2),
-            new Drive(1024, 'ssd', 3),
         ];
-        $raidFive = new RaidFive($drives);
-        $this->assertSame(2048, $raidFive->getCapacity());
-        $this->assertSame('2 KB', $raidFive->getCapacity(['human' => true]));
+        $raidOne = new RaidOne($drives);
+        $this->assertSame(1024, $raidOne->getCapacity());
+        $this->assertSame('1 KB', $raidOne->getCapacity(['human' => true]));
     }
     public function testGetCapacityWithHotSpares()
     {
@@ -27,12 +26,12 @@ class RaidFiveTest extends TestCase
             new Drive(1024, 'ssd', 4, ['hotSpare' => true]),
             new Drive(1024, 'ssd', 5, ['hotSpare' => true]),
         ];
-        $raidFive = new RaidFive($drives);
-        $this->assertSame(2048, $raidFive->getCapacity());
+        $raidOne = new RaidOne($drives);
+        $this->assertSame(1024, $raidOne->getCapacity());
     }
     public function testGetLevel()
     {
-        $raidFive = new RaidFive();
-        $this->assertSame(5, $raidFive->getLevel());
+        $raidOne = new RaidOne();
+        $this->assertSame(1, $raidOne->getLevel());
     }
 }
