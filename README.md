@@ -1,12 +1,11 @@
-# PHP RAID - A general purpose RAID (redundant array of disks) library in PHP.
+# php-raid
+###### A general purpose RAID (Redundant Array of Independent Disks) library in PHP.
 
 This library can be used to build objects that represent RAIDs. This is useful if you are wanting to
 manage and keep track of servers in a datacenter environment or for a home lab as part of a larger
 project.
 
-The library itself simply allows you to create object representations of a RAID and its underlying drives.
-
-It manages the total usable capacity of various RAID types for you.
+The library itself simply allows you to create object representations of a RAID and its underlying drives. It manages the total usable capacity of various RAID types for you, as well as hot spares, and general RAID validation for things like minimum drive count for a specific RAID level.
 
 Currently compatible RAID types are:
 
@@ -55,7 +54,11 @@ the configuration of hardware or software RAID in your datacenter/environment.
 
 Coming soon. For now see the [tests][/tests].
 
+## Stability
+
+This should be considered unstable currently. I have not used this library for anything yet
+so there are almost certainly bugs and limitations. (see Contribution section below ;)
+
 ## Contribution
 
 I welcome it and would appreciate it.  Fork the repository and create a feature branch off the 'develop' branch and open a pull request.
-
