@@ -23,6 +23,7 @@ it with an array of `\kevinquinnyo\Raid\Drive` objects.
 ```php
 use kevinquinnyo\Raid\Drive;
 use kevinquinnyo\Raid\RaidTen;
+use kevinquinnyo\Raid\RaidZero;
 
 $drives = [
     new Drive('1TB', 'ssd', '61cf6218-f378-4c7b-8b81-c09e84a1a86f'),
