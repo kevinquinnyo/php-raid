@@ -52,7 +52,7 @@ the configuration of hardware or software RAID in your datacenter/environment.
 
 ## Documentation
 
-Coming soon. For now see the [tests][/tests].
+Coming soon. For now see the [tests](/tests).
 
 ## Stability
 
