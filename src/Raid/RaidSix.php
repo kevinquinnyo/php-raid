@@ -14,7 +14,12 @@ class RaidSix extends AbstractRaid
     protected $mirrored = false;
     protected $parity = true;
 
-    public function __construct($drives = [])
+    /**
+     * Constructor.
+     *
+     * @param array $drives An array of \kevinquinnyo\Raid\Drive objects to initialize the RAID with.
+     */
+    public function __construct(array $drives = [])
     {
         if (empty($drives) === false) {
             $this->validate($drives);
@@ -23,7 +28,18 @@ class RaidSix extends AbstractRaid
         $this->drives = $drives;
     }
 
-    public function getCapacity($options = [])
+    /**
+     * Get Capacity
+     *
+     * Options:
+     *
+     * ```
+     * - human - Whether to return the results in human readable format.
+     * ```
+     * @param array $options Additional options to pass.
+     * @return int|string Usable capacity of the RAID in bytes or human readable format.
+     */
+    public function getCapacity(array $options = [])
     {
         $options += [
             'human' => false,
