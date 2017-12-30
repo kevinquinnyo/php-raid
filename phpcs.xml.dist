@@ -3,7 +3,6 @@
     <description>Coding standard rules.</description>
 
     <file>./src</file>
-    <file>./tests</file>
 
     <exclude-pattern>\.git</exclude-pattern>
     <exclude-pattern>*/build/*</exclude-pattern>
@@ -14,9 +13,5 @@
     <arg name="colors"/>
     <arg name="extensions" value="php"/>
 
-    <rule ref="PSR2"/>
-
-    <rule ref="Generic.Files.LineLength.TooLong">
-        <severity>0</severity>
-    </rule>
+    <rule ref="./vendor/cakephp/cakephp-codesniffer/CakePHP"/>
 </ruleset>
