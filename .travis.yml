@@ -9,8 +9,9 @@ branches:
     - master
     - develop
 script:
-  - export CODECOVERAGE=1; vendor/bin/phpunit --coverage-clover=clover.xml
+  - if [[ $TRAVIS_PHP_VERSION = 7.0 ]]; then export CODECOVERAGE=1; vendor/bin/phpunit --coverage-clover=clover.xml; fi
+  - if [[ $TRAVIS_PHP_VERSION != 7.0 ]]; then vendor/bin/phpunit; fi
 before_script:
   - composer install --prefer-dist --no-interaction
 after_success:
-  - bash <(curl -s https://codecov.io/bash);
+  - if [[ $TRAVIS_PHP_VERSION = 7.0 ]]; bash <(curl -s https://codecov.io/bash); fi
