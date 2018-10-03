@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/kevinquinnyo/php-raid.svg?branch=develop)](https://travis-ci.com/kevinquinnyo/php-raid)
 # php-raid
 ###### A general purpose RAID (Redundant Array of Independent Disks) library in PHP.
 
