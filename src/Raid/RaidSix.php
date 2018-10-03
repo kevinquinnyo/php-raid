@@ -25,7 +25,7 @@ class RaidSix extends AbstractRaid
             $this->validate($drives);
         }
 
-        $this->drives = $drives;
+        $this->setDrives($drives);
     }
 
     /**
@@ -45,7 +45,7 @@ class RaidSix extends AbstractRaid
             'human' => false,
         ];
         $total = $this->getTotalCapacity();
-        $count = $this->getDriveCount(false);
+        $count = $this->getDriveCount();
         $result = $total === 0 ? $total : $total / 2;
         if ($options['human'] === true) {
             return Number::toReadableSize($result);

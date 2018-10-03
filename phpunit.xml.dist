@@ -17,5 +17,6 @@
     </filter>
     <logging>
         <log target="./build/coverage" type="coverage-html"/>
+        <log type="coverage-html" target="./build/coverage/html"/>
     </logging>
 </phpunit>

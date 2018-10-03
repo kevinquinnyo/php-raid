@@ -8,7 +8,6 @@ use RuntimeException;
 abstract class AbstractRaid
 {
     protected $drives = [];
-    protected $hotSpares = [];
     protected $mirrored = false;
     protected $parity = false;
     protected $striped = false;
@@ -51,7 +50,7 @@ abstract class AbstractRaid
      */
     public function hasMinimumDriveCount()
     {
-        return $this->getDriveCount(false) >= $this->minimumDrives;
+        return count($this->getDrives()) >= $this->minimumDrives;
     }
 
     /**
@@ -65,7 +64,7 @@ abstract class AbstractRaid
             return false;
         }
 
-        $isOdd = ($this->getDriveCount(false) % 2) === 1;
+        $isOdd = (count($this->getDrives()) % 2) === 1;
 
         return $isOdd;
     }
@@ -97,11 +96,24 @@ abstract class AbstractRaid
     /**
      * Get Drives
      *
+     * @param $options Options - add 'withHotSpares' to include hot spare drives.
      * @return array The RAID's Drive objects.
      */
-    public function getDrives()
+    public function getDrives($options = [])
     {
-        return $this->drives;
+        $options += ['withHotSpares' => false];
+        $drives = $this->drives;
+
+        if ($options['withHotSpares'] === false) {
+            $drives = [];
+            foreach ($this->drives as $drive) {
+                if ($drive->isHotSpare() === false) {
+                    $drives[] = $drive;
+                }
+            }
+        }
+
+        return $drives;
     }
 
     /**
@@ -111,7 +123,16 @@ abstract class AbstractRaid
      */
     public function getHotSpares()
     {
-        return $this->hotSpares;
+        $hotSpares = [];
+        $drives = $this->getDrives(['withHotSpares' => true]);
+
+        foreach ($drives as $drive) {
+            if ($drive->isHotSpare() === true) {
+                $hotSpares[] = $drive;
+            }
+        }
+
+        return $hotSpares;
     }
 
     /**
@@ -145,17 +166,16 @@ abstract class AbstractRaid
     /**
      * Add Hot Spare
      *
-     * @param \kevinquinnyo\Raid\Drive $hotSpare A Drive to add to the list of hot spares.
+     * @param \kevinquinnyo\Raid\Drive $drive A Drive to add to the list of hot spares.
      * @return self
      */
-    public function addHotSpare(Drive $hotSpare)
+    public function addHotSpare(Drive $drive)
     {
-        $hotSpares = $this->hotSpares;
-        $hotSpares[] = $hotSpare;
+        $drives = $this->getDrives();
+        $drives[] = $drive->setHotSpare();
+        $this->validate($drives);
 
-        $this->validate($hotSpares);
-
-        return $this;
+        return $this->setDrives($drives);
     }
 
     /**
@@ -176,20 +196,19 @@ abstract class AbstractRaid
      *
      * @return int Capacity of smallest drive in array.
      */
-    public function getMinimumDriveSize()
+    public function getMinimumDriveSize($options = [])
     {
+        $options += ['withHotSpares' => false];
         $floor = null;
+        $drives = $this->getDrives($options);
 
-        foreach ($this->drives as $drive) {
-            if ($drive->isHotSpare() === true) {
-                continue;
-            }
+        foreach ($drives as $drive) {
             if (isset($floor) === false) {
                 $floor = $drive->getCapacity();
             }
 
             if ($drive->getCapacity() < $floor) {
-                $floor = $drive->capacity;
+                $floor = $drive->getCapacity();
             }
         }
 
@@ -197,33 +216,17 @@ abstract class AbstractRaid
     }
 
     /**
-     * Get Total Drive Count
-     *
-     * @return int The total number of drives in the RAID including hot spares.
-     */
-    public function getTotalDriveCount()
-    {
-        return count($this->getDrives()) + count($this->getHotSpares());
-    }
-
-    /**
      * Get Drive Count
      *
-     * @deprecated There's no point when you can just do count($raid->getDrives()) and count($raid->getHostSpares())
-     * @param mixed $withHotSpares If you wish to include hot spares in the count.
+     * @param array $options Add 'withHotSpares' if you wish to include hot spares in the count.
      * @return int The drive count for the RAID.
      */
-    public function getDriveCount($withHotSpares = true)
+    public function getDriveCount($options = [])
     {
-        $total = 0;
+        $options += ['withHotSpares' => false];
+        $drives = $this->getDrives($options);
 
-        foreach ($this->drives as $drive) {
-            if ($withHotSpares === false && $drive->isHotSpare() === false) {
-                $total += 1;
-            }
-        }
-
-        return $total;
+        return count($drives);
     }
 
     /**
@@ -258,10 +261,10 @@ abstract class AbstractRaid
         $total = 0;
         $min = $this->getMinimumDriveSize();
 
-        foreach ($this->drives as $drive) {
-            if ($options['withHotSpares'] === false && $drive->isHotSpare() === false) {
-                $total += $options['floor'] === true ? $min : $drive->getCapacity();
-            }
+        $drives = $this->getDrives($options);
+
+        foreach ($drives as $drive) {
+            $total += $options['floor'] === true ? $min : $drive->getCapacity();
         }
 
         if ($options['human'] === true) {

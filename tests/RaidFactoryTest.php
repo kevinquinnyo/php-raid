@@ -9,9 +9,20 @@ use \kevinquinnyo\Raid\Raid\RaidOne;
 use \kevinquinnyo\Raid\Raid\RaidFive;
 use \kevinquinnyo\Raid\Raid\RaidSix;
 use \kevinquinnyo\Raid\Raid\RaidTen;
+use InvalidArgumentException;
 
 class RaidFactoryTest extends TestCase
 {
+    public function testCreateInvalidRaid()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
+        ];
+        $factory = new RaidFactory();
+        $raid = $factory->create('-999999', $drives);
+    }
     public function testCreateRaidZero()
     {
         $drives = [

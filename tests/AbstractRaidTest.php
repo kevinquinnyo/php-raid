@@ -6,6 +6,7 @@ use \kevinquinnyo\Raid\Drive;
 use \kevinquinnyo\Raid\AbstractRaid;
 use \kevinquinnyo\Raid\Raid\RaidFive;
 use ReflectionClass;
+use RuntimeException;
 
 class AbstractRaidTest extends TestCase
 {
@@ -26,6 +27,192 @@ class AbstractRaidTest extends TestCase
         $reflectionProperty->setValue($object, $value);
     }
 
+    public function testValidateThrowsExceptionWhenDriveIsNotADrive()
+    {
+        $this->expectException(RuntimeException::class);
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+        $raidClass->validate(['invalid']);
+    }
+    /**
+     * testValidateThrowsExceptionWhenDriveIsNotADrive
+     *
+     * @group asdf
+     */
+    public function testValidateThrowsExceptionWhenDriveIdentifierAlreadyPresent()
+    {
+        $this->expectException(RuntimeException::class);
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+        $drives = [
+            new Drive(1024, 'ssd', 'DUPLICATE IDENTIFIER'),
+            new Drive(2048, 'ssd', 'DUPLICATE IDENTIFIER'),
+        ];
+        $raidClass->setDrives($drives);
+        $raidClass->validate($existingDrive);
+    }
+
+    public function testGetHotSpares()
+    {
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+        $this->assertEquals([], $raidClass->getHotSpares());
+    }
+
+    public function testAddHotSpare()
+    {
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+
+        // ensure there are no hot spares to begin with.
+        $this->assertEquals([], $raidClass->getHotSpares());
+
+        $newDrive = new Drive(1024, 'ssd', 1);
+        $raidClass = $raidClass->addHotSpare($newDrive);
+
+        $this->assertEquals([$newDrive], $raidClass->getHotSpares());
+    }
+
+    public function testGetDriveCount()
+    {
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(2048, 'ssd', 2),
+            new Drive(2048, 'ssd', 3),
+        ];
+
+        $hotSpare = new Drive(1024, 'ssd', 4);
+        $raidClass->setDrives($drives);
+        $raidClass->addHotSpare($hotSpare);
+
+        $this->assertEquals(3, $raidClass->getDriveCount());
+    }
+
+    public function testGetTotalCapacity()
+    {
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
+        ];
+
+        $hotSpare = new Drive(1024, 'ssd', 4);
+        $raidClass->setDrives($drives);
+        $raidClass->addHotSpare($hotSpare);
+
+        $this->assertEquals(2048, $raidClass->getTotalCapacity());
+    }
+
+    public function testGetTotalCapacityWithHotSpares()
+    {
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
+        ];
+
+        $hotSpare = new Drive(1024, 'ssd', 4);
+        $raidClass->setDrives($drives);
+        $raidClass->addHotSpare($hotSpare);
+
+        $options = ['withHotSpares' => true];
+        $this->assertEquals('3072', $raidClass->getTotalCapacity($options));
+    }
+
+    public function testGetTotalCapacityWithHuman()
+    {
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
+        ];
+
+        $hotSpare = new Drive(1024, 'ssd', 4);
+        $raidClass->setDrives($drives);
+        $raidClass->addHotSpare($hotSpare);
+
+        $options = ['human' => true];
+        $this->assertEquals('2 KB', $raidClass->getTotalCapacity($options));
+    }
+
+    public function testGetTotalCapacityWithFloorFalse()
+    {
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(2048, 'ssd', 2),
+        ];
+
+        $hotSpare = new Drive(1024, 'ssd', 4);
+        $raidClass->setDrives($drives);
+        $raidClass->addHotSpare($hotSpare);
+
+        $options = ['floor' => false];
+        $this->assertEquals(3072, $raidClass->getTotalCapacity($options));
+    }
+
+    public function testGetDriveCountWithHotSpares()
+    {
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(2048, 'ssd', 2),
+            new Drive(2048, 'ssd', 3),
+        ];
+
+        $hotSpare = new Drive(1024, 'ssd', 4);
+        $raidClass->setDrives($drives);
+        $raidClass->addHotSpare($hotSpare);
+
+        $options = ['withHotSpares' => true];
+        $this->assertEquals(4, $raidClass->getDriveCount($options));
+    }
+
+    public function testIsMirrored()
+    {
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+        $this->assertFalse($raidClass->isMirrored());
+    }
+
+    public function testIsStriped()
+    {
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+        $this->assertFalse($raidClass->isStriped());
+    }
+
+    public function testIsUnevenMirrorWithIsMirroredFalse()
+    {
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+
+        // ensure isMirrored is false first
+        $this->assertFalse($raidClass->isMirrored());
+
+        $this->assertFalse($raidClass->isUnevenMirror());
+    }
+
+    public function testGetMinimumDrives()
+    {
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+        $this->assertEquals(1, $raidClass->getMinimumDrives());
+    }
+
     public function testGetMinimumDriveSize()
     {
         $drives = [
@@ -38,6 +225,40 @@ class AbstractRaidTest extends TestCase
         $raidClass = new $concreteRaid();
         $raidClass->setDrives($drives);
         $this->assertSame(1024, $raidClass->getMinimumDriveSize());
+    }
+
+    public function testGetMinimumDriveSizeWithHotSpareWithoutHotSpareOption()
+    {
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(2048, 'ssd', 2),
+            new Drive(2048, 'ssd', 3),
+        ];
+
+        $hotSpare = new Drive(512, 'ssd', 4);
+
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+        $raidClass->setDrives($drives);
+        $raidClass->addHotSpare($hotSpare);
+        $this->assertSame(1024, $raidClass->getMinimumDriveSize());
+    }
+
+    public function testGetMinimumDriveSizeWithHotSpare()
+    {
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(2048, 'ssd', 2),
+            new Drive(2048, 'ssd', 3),
+        ];
+
+        $hotSpare = new Drive(512, 'ssd', 4);
+
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+        $raidClass->setDrives($drives);
+        $raidClass->addHotSpare($hotSpare);
+        $this->assertSame(512, $raidClass->getMinimumDriveSize(['withHotSpares' => true]));
     }
 
     public function testAddDrive()
