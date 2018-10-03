@@ -41,16 +41,14 @@ $drives = [
     new Drive('1TB', 'ssd', '302db7a1-bb2c-4fb9-a9e1-30636e8f312c'),
 ];
 
-$options = ['human' => true];
-
 $raidTen = new RaidTen($drives);
 
 echo $raidTen->getCapacity(); // 2199023255552
-echo $raidTen->getCapacity($options); // 2 TB
+echo $raidTen->getCapacity(['human' => true]); // 2 TB
 
 $raidZero = new RaidZero($drives);
 echo $raidZero->getCapacity(); // 4398046511104
-echo $raidZero->getCapacity($options); // 4 TB
+echo $raidZero->getCapacity(['human' => true]); // 4 TB
 ```
 
 This library is most useful if you are doing some kind of inventory management already
