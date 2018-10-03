@@ -9,7 +9,7 @@
     "wiki": "https://github.com/kevinquinnyo/php-raid/wiki"
   },
   "require": {
-    "php": ">= 5.6",
+    "php": ">= 7.0",
     "cakephp/i18n": "^3.4",
     "cakephp/utility": "^3.4",
     "squizlabs/php_codesniffer": "*"
