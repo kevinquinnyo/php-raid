@@ -28,7 +28,7 @@ class DriveTest extends TestCase
     public function testGetCapacity()
     {
         $drive = new Drive('1k', 'ssd', 1);
-        $this->assertSame(1024, $drive->getCapacity());
+        $this->assertSame(1024.0, $drive->getCapacity());
     }
 
     public function testGetCapacityWithHuman()
