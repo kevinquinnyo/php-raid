@@ -26,7 +26,7 @@ class RaidFive extends AbstractRaid
             $this->validate($drives);
         }
 
-        $this->drives = $drives;
+        $this->setDrives($drives);
     }
 
     /**
