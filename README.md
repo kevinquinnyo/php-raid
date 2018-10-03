@@ -1,11 +1,12 @@
 <p align="center">
     <a href="https://travis-ci.com/kevinquinnyo/php-raid" target="_blank">
-        <img alt="Build Status" src="https://img.shields.io/travis/kevinquinnyo/php-raid/master.svg?style=flat-square">
+        <img alt="Build Status" src="https://api.travis-ci.com/kevinquinnyo/php-raid.svg?branch=master">
     </a>
     <a href="https://codecov.io/github/kevinquinnyo/php-raid" target="_blank">
-        <img alt="Coverage Status" src="https://img.shields.io/codecov/c/github/kevinquinnyo/php-raid.svg?style=flat-square">
+        <img alt="Coverage Status" src="https://codecov.io/gh/kevinquinnyo/php-raid/branch/master/graph/badge.svg">
     </a>
 </p>
+
 # php-raid
 ###### A general purpose RAID (Redundant Array of Independent Disks) library in PHP.
 
