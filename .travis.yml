@@ -4,6 +4,10 @@ php:
   - '7.1'
   - '7.2'
   - nightly
+branches:
+  only:
+    - master
+    - develop
 before_script:
   - composer install --prefer-dist --no-interaction
 after_success:

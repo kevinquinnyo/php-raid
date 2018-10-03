@@ -1,4 +1,11 @@
-[![Build Status](https://travis-ci.com/kevinquinnyo/php-raid.svg?branch=develop)](https://travis-ci.com/kevinquinnyo/php-raid)
+<p align="center">
+    <a href="https://travis-ci.org/php-raid/php-raid" target="_blank">
+        <img alt="Build Status" src="https://img.shields.io/travis/php-raid/php-raid/master.svg?style=flat-square">
+    </a>
+    <a href="https://codecov.io/github/php-raid/php-raid" target="_blank">
+        <img alt="Coverage Status" src="https://img.shields.io/codecov/c/github/php-raid/php-raid.svg?style=flat-square">
+    </a>
+</p>
 # php-raid
 ###### A general purpose RAID (Redundant Array of Independent Disks) library in PHP.
 
@@ -55,11 +62,6 @@ the configuration of hardware or software RAID in your datacenter/environment.
 ## Documentation
 
 Coming soon. For now see the [tests](/tests).
-
-## Stability
-
-This should be considered unstable currently. I have not used this library for anything yet
-so there are almost certainly bugs and limitations. (see Contribution section below ;)
 
 ## Contribution
 
