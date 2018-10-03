@@ -1,8 +1,8 @@
 <p align="center">
-    <a href="https://travis-ci.org/php-raid/php-raid" target="_blank">
+    <a href="https://travis-ci.org/kevinquinnyo/php-raid" target="_blank">
         <img alt="Build Status" src="https://img.shields.io/travis/kevinquinnyo/php-raid/master.svg?style=flat-square">
     </a>
-    <a href="https://codecov.io/github/php-raid/php-raid" target="_blank">
+    <a href="https://codecov.io/github/kevinquinnyo/php-raid" target="_blank">
         <img alt="Coverage Status" src="https://img.shields.io/codecov/c/github/kevinquinnyo/php-raid.svg?style=flat-square">
     </a>
 </p>
