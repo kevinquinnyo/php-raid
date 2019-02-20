@@ -9,6 +9,7 @@ use \kevinquinnyo\Raid\Raid\RaidOne;
 use \kevinquinnyo\Raid\Raid\RaidFive;
 use \kevinquinnyo\Raid\Raid\RaidSix;
 use \kevinquinnyo\Raid\Raid\RaidTen;
+use \kevinquinnyo\Raid\Raid\RaidSHR;
 use InvalidArgumentException;
 
 class RaidFactoryTest extends TestCase
@@ -72,5 +73,15 @@ class RaidFactoryTest extends TestCase
         $factory = new RaidFactory();
         $raid = $factory->create(10, $drives);
         $this->assertInstanceOf(RaidTen::class, $raid);
+    }
+    public function testCreateSHRRaid()
+    {
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
+        ];
+        $factory = new RaidFactory();
+        $raid = $factory->create('SHR', $drives);
+        $this->assertInstanceOf(RaidSHR::class, $raid);
     }
 }

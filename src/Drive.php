@@ -34,9 +34,10 @@ class Drive
             'hotSpare' => false,
         ];
         if (ctype_digit($capacity)) {
-            $bytes = (int)$capacity;
+            $this->capacity = (int)$capacity;
+        } else {
+            $this->capacity = (int)Text::parseFileSize($capacity);
         }
-        $this->capacity = isset($bytes) === true ? $bytes : Text::parseFileSize($capacity);
         $this->validate($type);
         $this->type = $type;
         $this->identifier = $identifier;

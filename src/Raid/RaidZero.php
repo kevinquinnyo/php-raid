@@ -44,12 +44,40 @@ class RaidZero extends AbstractRaid
         $options += [
             'human' => false,
         ];
-        $result = $this->getTotalCapacity();
+        $capacity = $this->getTotalCapacity();
 
         if ($options['human'] === true) {
-            return Number::toReadableSize($result);
+            return Number::toReadableSize($capacity);
         }
 
-        return $result;
+        return $capacity;
+    }
+
+    /**
+     * Get parity total size
+     *
+     * Get the total size reserved for parity (unusable by data but not lossed).
+     *
+     * Options:
+     *
+     * ```
+     * - human - Whether to convert the result into human readable units, e.g. - 4 TB, 500 GB, etc
+     * ```
+     *
+     * @param array $options Additional options to scope the results.
+     * @return int|string The total size reserved for parity of the RAID.
+     */
+    public function getParitySize(array $options = [])
+    {
+        $options += [
+            'human' => false,
+        ];
+        $paritySize = 0;
+
+        if ($options['human'] === true) {
+            return Number::toReadableSize($paritySize);
+        }
+
+        return $paritySize;
     }
 }
