@@ -36,7 +36,7 @@ class Drive
         if (ctype_digit($capacity)) {
             $bytes = (int)$capacity;
         }
-        $this->capacity = isset($bytes) === true ? $bytes : Text::parseFileSize($capacity);
+        $this->capacity = isset($bytes) === true ? $bytes : (int) Text::parseFileSize($capacity);
         $this->validate($type);
         $this->type = $type;
         $this->identifier = $identifier;

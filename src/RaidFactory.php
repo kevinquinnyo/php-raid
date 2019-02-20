@@ -7,6 +7,7 @@ use kevinquinnyo\Raid\Raid\RaidOne;
 use kevinquinnyo\Raid\Raid\RaidSix;
 use kevinquinnyo\Raid\Raid\RaidTen;
 use kevinquinnyo\Raid\Raid\RaidZero;
+use kevinquinnyo\Raid\Raid\RaidSHR;
 
 class RaidFactory
 {
@@ -18,31 +19,34 @@ class RaidFactory
      * @throws \InvalidArgumentException If the level provided is not supported by this library.
      * @return \kevinquinnyo\Raid\AbstractRaid Initialized Raid object.
      */
-    public function create(int $level, $drives)
+    public function create($level, $drives)
     {
         $drives = (array)$drives;
         $raid = null;
 
-        switch ($level) {
-            case 0:
+        switch (true) {
+            case $level === 0:
                 $raid = new RaidZero($drives);
                 break;
-            case 1:
+            case $level === 1:
                 $raid = new RaidOne($drives);
                 break;
-            case 5:
+            case $level === 5:
                 $raid = new RaidFive($drives);
                 break;
-            case 6:
+            case $level === 6:
                 $raid = new RaidSix($drives);
                 break;
-            case 10:
+            case $level === 10:
                 $raid = new RaidTen($drives);
+                break;
+            case $level === 'SHR':
+                $raid = new RaidSHR($drives);
                 break;
         }
 
         if ($raid === null) {
-            throw new InvalidArgumentException('Unsupported RAID level provided. (Supported levels: 0, 1, 5, 6, 10)');
+            throw new InvalidArgumentException('Unsupported RAID level provided. (Supported levels: 0, 1, 5, 6, 10, SHR)');
         }
 
         return $raid;

@@ -73,4 +73,14 @@ class RaidFactoryTest extends TestCase
         $raid = $factory->create(10, $drives);
         $this->assertInstanceOf(RaidTen::class, $raid);
     }
+    public function testCreateSHRRaid()
+    {
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(1024, 'ssd', 2),
+        ];
+        $factory = new RaidFactory();
+        $raid = $factory->create('SHR', $drives);
+        $this->assertInstanceOf(RaidSHR::class, $raid);
+    }
 }
