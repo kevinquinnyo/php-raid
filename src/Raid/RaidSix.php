@@ -13,6 +13,7 @@ class RaidSix extends AbstractRaid
     protected $minimumDrives = 4;
     protected $mirrored = false;
     protected $parity = true;
+    protected $striped = true;
 
     /**
      * Constructor.
@@ -44,9 +45,7 @@ class RaidSix extends AbstractRaid
         $options += [
             'human' => false,
         ];
-        $total = $this->getTotalCapacity();
-        $count = $this->getDriveCount();
-        $capacity = $total === 0 ? $total : $total / 2;
+        $capacity = $this->getMinimumDriveSize() * ($this->getDriveCount() - 2);
 
         if ($options['human'] === true) {
             return Number::toReadableSize($capacity);
