@@ -4,7 +4,6 @@ namespace kevinquinnyo\Raid\Test;
 use \PHPUnit\Framework\TestCase;
 use \kevinquinnyo\Raid\Drive;
 use \kevinquinnyo\Raid\AbstractRaid;
-use \kevinquinnyo\Raid\Raid\RaidFive;
 use ReflectionClass;
 use RuntimeException;
 
