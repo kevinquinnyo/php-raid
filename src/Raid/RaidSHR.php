@@ -9,11 +9,11 @@ class RaidSHR extends AbstractRaid
 {
     const LEVEL = "SHR";
     protected $drives = [];
-    protected $hotSpares = [];
-    protected $minimumDrives = 2;
     protected $mirrored = false;
     protected $parity = true;
     protected $striped = true;
+    protected $minimumDrives = 2;
+    protected $drivesFailureSupported = 1;
 
     /**
      * Constructor.
@@ -77,9 +77,8 @@ class RaidSHR extends AbstractRaid
         $options += [
             'human' => false,
         ];
-        $minimumDriveSizeOfRAID = $this->getMinimumDriveSize();
         $maximumDriveSizeOfRAID = $this->getMaximumDriveSize();
-        if ($this->getNumberOfDrivesOfThisCapacity($maximumDriveSizeOfRAID) >= 2) {
+        if ($this->getNumberOfDrivesOfThisCapacity($maximumDriveSizeOfRAID) >= $this->minimumDrives) {
             $paritySize = $maximumDriveSizeOfRAID;
         } else {
             /* We are looking for the second disk with the highest capacity present in the drives array, the use of the first will be the same as the capacity of the second */

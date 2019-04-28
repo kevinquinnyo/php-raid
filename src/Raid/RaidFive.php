@@ -9,11 +9,11 @@ class RaidFive extends AbstractRaid
 {
     const LEVEL = 5;
     protected $drives = [];
-    protected $hotSpares = [];
-    protected $minimumDrives = 3;
     protected $mirrored = false;
     protected $parity = true;
     protected $striped = true;
+    protected $minimumDrives = 3;
+    protected $drivesFailureSupported = 1;
 
     /**
      * Constructor.

@@ -13,6 +13,7 @@ abstract class AbstractRaid
     protected $parity = false;
     protected $striped = false;
     protected $minimumDrives = 1;
+    protected $drivesFailureSupported = 0;
 
     /**
      * Is Mirrored
@@ -32,6 +33,16 @@ abstract class AbstractRaid
     public function getMinimumDrives()
     {
         return $this->minimumDrives;
+    }
+
+    /**
+     * Get Drives Failure Supported Count
+     *
+     * @return int The drives failure supported count of this RAID.
+     */
+    public function getDrivesFailureSupported()
+    {
+        return $this->drivesFailureSupported;
     }
 
     /**
@@ -97,22 +108,46 @@ abstract class AbstractRaid
     /**
      * Get Drives
      *
-     * @param array $options Options - add 'withHotSpares' to include hot spare drives.
+     * Options:
+     *
+     * ```
+     * - sortBy - Whether to sort the drives by capacity
+     * - sortOrder - If sorted, the order (ascending ('ASC') or descending ('DESC')), ascending by default
+     * - withHotSpares - Whether to include the hot spares in the drives.
+     * ```
+     *
+     * @param array $options Additional options to scope the results.
      * @return array The RAID's Drive objects.
      */
     public function getDrives(array $options = [])
     {
         $options += [
-            'withHotSpares' => false
+            'sortBy' => null,
+            'sortOrder' => 'ASC',
+            'withHotSpares' => false,
         ];
-        $drives = $this->drives;
 
         if ($options['withHotSpares'] === false) {
             $drives = [];
+
             foreach ($this->drives as $drive) {
                 if ($drive->isHotSpare() === false) {
-                    $drives[] = $drive;
+                    array_push($drives, $drive);
                 }
+            }
+        } else {
+            $drives = $this->drives;
+        }
+
+        if ($options['sortBy'] === 'capacity') {
+            if ($options['sortOrder'] === 'ASC') {
+                usort($drives, function ($a, $b) {
+                    return $a->getCapacity() - $b->getCapacity(); // sorted by ASC order
+                });
+            } else {
+                usort($drives, function ($a, $b) {
+                    return $b->getCapacity() - $a->getCapacity(); // sorted by DESC order
+                });
             }
         }
 
@@ -120,22 +155,46 @@ abstract class AbstractRaid
     }
 
     /**
-     * Get Hot Spares
+     * Get Hot Spare Drives
      *
-     * @return array The RAID's Drive objects listed as hot spares.
+     * Options:
+     *
+     * ```
+     * - sortBy - Whether to sort the drives by capacity
+     * - sortOrder - If sorted, the order (ascending ('ASC') or descending ('DESC')), ascending by default
+     * ```
+     *
+     * @param array $options Additional options to scope the results.
+     * @return array The RAID's Drive objects listed as hot spare drives.
      */
-    public function getHotSpares()
+    public function getHotSpareDrives(array $options = [])
     {
-        $hotSpares = [];
-        $drives = $this->getDrives(['withHotSpares' => true]);
+        $options += [
+            'sortBy' => null,
+            'sortOrder' => 'ASC',
+        ];
 
-        foreach ($drives as $drive) {
+        $hotSpareDrives = [];
+
+        foreach ($this->drives as $drive) {
             if ($drive->isHotSpare() === true) {
-                $hotSpares[] = $drive;
+                array_push($hotSpareDrives, $drive);
             }
         }
 
-        return $hotSpares;
+        if ($options['sortBy'] === 'capacity') {
+            if ($options['sortOrder'] === 'ASC') {
+                usort($drives, function ($a, $b) {
+                    return $a->getCapacity() - $b->getCapacity(); // sorted by ASC order
+                });
+            } else {
+                usort($hotSpareDrives, function ($a, $b) {
+                    return $b->getCapacity() - $a->getCapacity(); // sorted by DESC order
+                });
+            }
+        }
+
+        return $hotSpareDrives;
     }
 
     /**
@@ -219,20 +278,20 @@ abstract class AbstractRaid
             'human' => false,
             'withHotSpares' => false,
         ];
-        $floor = $this->drives[0]->getCapacity();
+        $minimumDriveSize = $this->getDrives($options)[0]->getCapacity();
         $drives = $this->getDrives($options);
 
         foreach ($drives as $drive) {
-            if ($drive->getCapacity() < $floor) {
-                $floor = $drive->getCapacity();
+            if ($drive->getCapacity() < $minimumDriveSize) {
+                $minimumDriveSize = $drive->getCapacity();
             }
         }
 
         if ($options['human'] === true) {
-            $floor = Number::toReadableSize($floor);
+            $minimumDriveSize = Number::toReadableSize($minimumDriveSize);
         }
 
-        return $floor;
+        return $minimumDriveSize;
     }
 
     /**
@@ -256,20 +315,19 @@ abstract class AbstractRaid
             'human' => false,
             'withHotSpares' => false,
         ];
-        $ceil = $this->drives[0]->getCapacity();
-        $drives = $this->getDrives($options);
+        $maximumDriveSize = $this->drives[0]->getCapacity();
 
-        foreach ($drives as $drive) {
-            if ($drive->getCapacity() > $ceil) {
-                $ceil = $drive->getCapacity();
+        foreach ($this->getDrives($options) as $drive) {
+            if ($drive->getCapacity() > $maximumDriveSize) {
+                $maximumDriveSize = $drive->getCapacity();
             }
         }
 
         if ($options['human'] === true) {
-            $ceil = Number::toReadableSize($ceil);
+            $maximumDriveSize = Number::toReadableSize($maximumDriveSize);
         }
 
-        return $ceil;
+        return $maximumDriveSize;
     }
 
     /**
@@ -318,12 +376,9 @@ abstract class AbstractRaid
             'floor' => false,
         ];
         $total = 0;
-        $min = $this->getMinimumDriveSize();
-
-        $drives = $this->getDrives($options);
-
-        foreach ($drives as $drive) {
-            $total += $options['floor'] === true ? $min : $drive->getCapacity();
+        $minimumDriveSize = $this->getMinimumDriveSize();
+        foreach ($this->getDrives($options) as $drive) {
+            $total += $options['floor'] === true ? $minimumDriveSize : $drive->getCapacity();
         }
 
         if ($options['human'] === true) {
@@ -399,12 +454,7 @@ abstract class AbstractRaid
             'human' => false,
             'withHotSpares' => false,
         ];
-        $lossedSpace = $this->getTotalCapacity() - $this->getCapacity() - $this->getParitySize();
-        if ($options['withHotSpares'] === true) {
-            foreach ($this->getHotSpares() as $hotSpareDrive) {
-                $lossedSpace += $hotSpareDrive->getCapacity();
-            }
-        }
+        $lossedSpace = $this->getTotalCapacity($options) - $this->getCapacity() - $this->getParitySize();
 
         if ($options['human'] === true) {
             $lossedSpace = Number::toReadableSize($lossedSpace);
@@ -423,27 +473,62 @@ abstract class AbstractRaid
     public function getNumberOfDrivesOfThisCapacity($capacity, array $options = [])
     {
         $options += [
-            'withHotSpares' => false
+            'withHotSpares' => false,
         ];
         if (ctype_digit($capacity)) {
-            $bytes = (int)$capacity;
+            $capacity = (int)$capacity;
+        } else {
+            $capacity = (int)Text::parseFileSize($capacity);
         }
-        $capacity = isset($bytes) === true ? $bytes : (int)Text::parseFileSize($capacity);
 
         $numberOfDrivesOfThisCapacity = 0;
-        foreach ($this->drives as $drive) {
+        $temp = $this->getDrives($options);
+        foreach ($temp as $drive) {
             if ($drive->getCapacity() === $capacity) {
                 ++$numberOfDrivesOfThisCapacity;
             }
         }
-        if ($options['withHotSpares'] === true) {
-            foreach ($this->getHotSpares() as $hotSpareDrive) {
-                if ($hotSpareDrive->getCapacity() === $capacity) {
-                    ++$numberOfDrivesOfThisCapacity;
-                }
+
+        return $numberOfDrivesOfThisCapacity;
+    }
+
+    /**
+     * Get next maximum drive capacity
+     *
+     * Options:
+     *
+     * ```
+     * - human - Whether to convert the result into human readable units, e.g. - 4 TB, 500 GB, etc
+     * - withHotSpares - Whether to include the hot spares in the sum.
+     * ```
+     *
+     * @param mixed $maximumDriveCapacity The capacity of the biggest drive you know, in bytes or human readable format, e.g. - '500GB', '5T', etc.
+     * @param array $options Additional options to scope the results.
+     * @return int|string The next bigger drive's capacity of the drives array, return 0 if no smaller drive than the capacity provided.
+     */
+    public function getNextMaximumDriveCapacity($maximumDriveCapacity, array $options = [])
+    {
+        $options += [
+            'human' => false,
+            'withHotSpares' => false,
+        ];
+        if (ctype_digit($maximumDriveCapacity)) {
+            $maximumDriveCapacity = (int)$maximumDriveCapacity;
+        } else {
+            $maximumDriveCapacity = (int)Text::parseFileSize($maximumDriveCapacity);
+        }
+
+        $capacityOfNextLargerDrive = 0;
+        foreach ($this->getDrives($options) as $drive) {
+            if ($drive->getCapacity() > $capacityOfNextLargerDrive && $drive->getCapacity() < $maximumDriveCapacity) {
+                $capacityOfNextLargerDrive = $drive->getCapacity();
             }
         }
 
-        return $numberOfDrivesOfThisCapacity;
+        if ($options['human'] === true) {
+            $capacityOfNextLargerDrive = Number::toReadableSize($capacityOfNextLargerDrive);
+        }
+
+        return $capacityOfNextLargerDrive;
     }
 }

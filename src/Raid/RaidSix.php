@@ -9,11 +9,11 @@ class RaidSix extends AbstractRaid
 {
     const LEVEL = 6;
     protected $drives = [];
-    protected $hotSpares = [];
-    protected $minimumDrives = 4;
     protected $mirrored = false;
     protected $parity = true;
     protected $striped = true;
+    protected $minimumDrives = 4;
+    protected $drivesFailureSupported = 2;
 
     /**
      * Constructor.

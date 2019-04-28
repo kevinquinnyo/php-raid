@@ -9,10 +9,11 @@ class RaidZero extends AbstractRaid
 {
     const LEVEL = 0;
     protected $drives = [];
-    protected $hotSpares = [];
-    protected $minimumDrives = 2;
     protected $mirrored = false;
+    protected $parity = false;
     protected $striped = true;
+    protected $minimumDrives = 2;
+    protected $drivesFailureSupported = 0;
 
     /**
      * Constructor.

@@ -9,9 +9,11 @@ class RaidTen extends AbstractRaid
 {
     const LEVEL = 10;
     protected $drives = [];
-    protected $hotSpares = [];
-    protected $minimumDrives = 4;
     protected $mirrored = true;
+    protected $parity = false;
+    protected $striped = true;
+    protected $minimumDrives = 4;
+    protected $drivesFailureSupported = 2;
 
     /**
      * Constructor.
@@ -23,6 +25,8 @@ class RaidTen extends AbstractRaid
         if (empty($drives) === false) {
             $this->validate($drives);
         }
+
+        $this->drivesFailureSupported = count($drives) / 2;
         $this->setDrives($drives);
     }
 
@@ -42,7 +46,14 @@ class RaidTen extends AbstractRaid
         $options += [
             'human' => false,
         ];
-        $capacity = $this->getTotalCapacity() / 2;
+        $drivesOrderedByCapacity = $this->getDrives(['orderBy' => 'capacity', 'sortOrder' => 'DESC']);
+        $numberOfDrives = count($drivesOrderedByCapacity);
+        $capacity = 0;
+        for ($i = 0; $i + 1 < $numberOfDrives; $i += 2) {
+            $firstDrive = $drivesOrderedByCapacity[$i];
+            $secondDrive = $drivesOrderedByCapacity[$i + 1];
+            $capacity += min($firstDrive->getCapacity(), $secondDrive->getCapacity());
+        }
 
         if ($options['human'] === true) {
             return Number::toReadableSize($capacity);
@@ -70,7 +81,14 @@ class RaidTen extends AbstractRaid
         $options += [
             'human' => false,
         ];
-        $paritySize = $this->getTotalCapacity() / 2;
+        $drivesOrderedByCapacity = $this->getDrives(['orderBy' => 'capacity', 'sortOrder' => 'DESC']);
+        $numberOfDrives = count($drivesOrderedByCapacity);
+        $paritySize = 0;
+        for ($i = 0; $i + 1 < $numberOfDrives; $i += 2) {
+            $firstDrive = $drivesOrderedByCapacity[$i];
+            $secondDrive = $drivesOrderedByCapacity[$i + 1];
+            $paritySize += min($firstDrive->getCapacity(), $secondDrive->getCapacity());
+        }
 
         if ($options['human'] === true) {
             return Number::toReadableSize($paritySize);

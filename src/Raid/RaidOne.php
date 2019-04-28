@@ -9,10 +9,11 @@ class RaidOne extends AbstractRaid
 {
     const LEVEL = 1;
     protected $drives = [];
-    protected $hotSpares = [];
-    protected $minimumDrives = 2;
     protected $mirrored = true;
+    protected $parity = false;
     protected $striped = false;
+    protected $minimumDrives = 2;
+    protected $drivesFailureSupported = 1;
 
     /**
      * Constructor.
@@ -25,6 +26,7 @@ class RaidOne extends AbstractRaid
             $this->validate($drives);
         }
 
+        $this->drivesFailureSupported = count($drives) - 1;
         $this->setDrives($drives);
     }
 

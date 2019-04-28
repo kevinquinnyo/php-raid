@@ -5,6 +5,7 @@ use InvalidArgumentException;
 use kevinquinnyo\Raid\Raid\RaidFive;
 use kevinquinnyo\Raid\Raid\RaidOne;
 use kevinquinnyo\Raid\Raid\RaidSHR;
+use kevinquinnyo\Raid\Raid\RaidSHR2;
 use kevinquinnyo\Raid\Raid\RaidSix;
 use kevinquinnyo\Raid\Raid\RaidTen;
 use kevinquinnyo\Raid\Raid\RaidZero;
@@ -42,6 +43,9 @@ class RaidFactory
                 break;
             case $level === 'SHR':
                 $raid = new RaidSHR($drives);
+                break;
+            case $level === 'SHR2':
+                $raid = new RaidSHR2($drives);
                 break;
         }
 
