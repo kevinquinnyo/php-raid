@@ -11,6 +11,7 @@ class Drive
     protected $type = null;
     protected $hotSpare = false;
     protected $identifier = null;
+    protected static $types = ['ssd', 'hdd'];
 
     /**
      * Constructor.
@@ -34,13 +35,24 @@ class Drive
             'hotSpare' => false,
         ];
         if (ctype_digit($capacity)) {
-            $bytes = (int)$capacity;
+            $this->capacity = (int)$capacity;
+        } else {
+            $this->capacity = (int)Text::parseFileSize($capacity);
         }
-        $this->capacity = isset($bytes) === true ? $bytes : Text::parseFileSize($capacity);
         $this->validate($type);
         $this->type = $type;
         $this->identifier = $identifier;
         $this->hotSpare = $options['hotSpare'];
+    }
+
+    /**
+     * Get Types
+     *
+     * @return string All drives Types.
+     */
+    public static function getTypes()
+    {
+        return self::$types;
     }
 
     /**
@@ -77,9 +89,7 @@ class Drive
      */
     protected function validate($type)
     {
-        $types = ['ssd', 'hdd'];
-
-        if (in_array($type, $types) === false) {
+        if (!in_array($type, $this->getTypes())) {
             throw new InvalidArgumentException('This is not a valid drive type.');
         }
     }

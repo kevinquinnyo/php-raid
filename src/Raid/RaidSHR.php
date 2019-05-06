@@ -5,15 +5,15 @@ use Cake\I18n\Number;
 use kevinquinnyo\Raid\AbstractRaid;
 use kevinquinnyo\Raid\Drive;
 
-class RaidSix extends AbstractRaid
+class RaidSHR extends AbstractRaid
 {
-    const LEVEL = 6;
+    const LEVEL = "SHR";
     protected $drives = [];
     protected $mirrored = false;
     protected $parity = true;
     protected $striped = true;
-    protected $minimumDrives = 4;
-    protected $drivesFailureSupported = 2;
+    protected $minimumDrives = 2;
+    protected $drivesFailureSupported = 1;
 
     /**
      * Constructor.
@@ -32,11 +32,15 @@ class RaidSix extends AbstractRaid
     /**
      * Get Capacity
      *
+     * Get the usable capacity of the RAID in its current state.
+     * This method differs slightly per RAID level implementation.
+     *
      * Options:
      *
      * ```
-     * - human - Whether to return the results in human readable format.
+     * - human - Whether to convert the result into human readable units, e.g. - 4 TB, 500 GB, etc
      * ```
+     *
      * @param array $options Additional options to pass.
      * @return int|string Usable capacity of the RAID in bytes or human readable format.
      */
@@ -45,7 +49,7 @@ class RaidSix extends AbstractRaid
         $options += [
             'human' => false,
         ];
-        $capacity = $this->getMinimumDriveSize() * ($this->getDriveCount() - 2);
+        $capacity = $this->getTotalCapacity() - $this->getMaximumDriveSize();
 
         if ($options['human'] === true) {
             return Number::toReadableSize($capacity);
@@ -73,7 +77,18 @@ class RaidSix extends AbstractRaid
         $options += [
             'human' => false,
         ];
-        $paritySize = $this->getMinimumDriveSize() * 2;
+        $maximumDriveSizeOfRAID = $this->getMaximumDriveSize();
+        if ($this->getNumberOfDrivesOfThisCapacity($maximumDriveSizeOfRAID) >= $this->minimumDrives) {
+            $paritySize = $maximumDriveSizeOfRAID;
+        } else {
+            /* We are looking for the second disk with the highest capacity present in the drives array, the use of the first will be the same as the capacity of the second */
+            $paritySize = 0;
+            foreach ($this->drives as $drive) {
+                if ($drive->getCapacity() > $paritySize && $drive->getCapacity() < $maximumDriveSizeOfRAID) {
+                    $paritySize = $drive->getCapacity();
+                }
+            }
+        }
 
         if ($options['human'] === true) {
             return Number::toReadableSize($paritySize);

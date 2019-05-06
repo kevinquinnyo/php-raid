@@ -9,10 +9,11 @@ class RaidOne extends AbstractRaid
 {
     const LEVEL = 1;
     protected $drives = [];
-    protected $hotSpares = [];
-    protected $minimumDrives = 2;
     protected $mirrored = true;
+    protected $parity = false;
     protected $striped = false;
+    protected $minimumDrives = 2;
+    protected $drivesFailureSupported = 1;
 
     /**
      * Constructor.
@@ -25,6 +26,7 @@ class RaidOne extends AbstractRaid
             $this->validate($drives);
         }
 
+        $this->drivesFailureSupported = count($drives) - 1;
         $this->setDrives($drives);
     }
 
@@ -44,10 +46,40 @@ class RaidOne extends AbstractRaid
         $options += [
             'human' => false,
         ];
+        $capacity = $this->getMinimumDriveSize();
+
         if ($options['human'] === true) {
-            return Number::toReadableSize($this->getMinimumDriveSize());
+            return Number::toReadableSize($capacity);
         }
 
-        return $this->getMinimumDriveSize();
+        return $capacity;
+    }
+
+    /**
+     * Get parity total size
+     *
+     * Get the total size reserved for parity (unusable by data but not lossed).
+     *
+     * Options:
+     *
+     * ```
+     * - human - Whether to convert the result into human readable units, e.g. - 4 TB, 500 GB, etc
+     * ```
+     *
+     * @param array $options Additional options to scope the results.
+     * @return int|string The total size reserved for parity of the RAID.
+     */
+    public function getParitySize(array $options = [])
+    {
+        $options += [
+            'human' => false,
+        ];
+        $capacity = $this->getMinimumDriveSize() * ($this->getDriveCount() - 1);
+
+        if ($options['human'] === true) {
+            return Number::toReadableSize($capacity);
+        }
+
+        return $capacity;
     }
 }

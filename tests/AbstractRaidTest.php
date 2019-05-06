@@ -4,7 +4,6 @@ namespace kevinquinnyo\Raid\Test;
 use \PHPUnit\Framework\TestCase;
 use \kevinquinnyo\Raid\Drive;
 use \kevinquinnyo\Raid\AbstractRaid;
-use \kevinquinnyo\Raid\Raid\RaidFive;
 use ReflectionClass;
 use RuntimeException;
 
@@ -52,11 +51,11 @@ class AbstractRaidTest extends TestCase
         $raidClass->validate($existingDrive);
     }
 
-    public function testGetHotSpares()
+    public function testGetHotSpareDrives()
     {
         $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
         $raidClass = new $concreteRaid();
-        $this->assertEquals([], $raidClass->getHotSpares());
+        $this->assertEquals([], $raidClass->getHotSpareDrives());
     }
 
     public function testAddHotSpare()
@@ -65,12 +64,12 @@ class AbstractRaidTest extends TestCase
         $raidClass = new $concreteRaid();
 
         // ensure there are no hot spares to begin with.
-        $this->assertEquals([], $raidClass->getHotSpares());
+        $this->assertEquals([], $raidClass->getHotSpareDrives());
 
         $newDrive = new Drive(1024, 'ssd', 1);
         $raidClass = $raidClass->addHotSpare($newDrive);
 
-        $this->assertEquals([$newDrive], $raidClass->getHotSpares());
+        $this->assertEquals([$newDrive], $raidClass->getHotSpareDrives());
     }
 
     public function testGetDriveCount()
@@ -257,8 +256,33 @@ class AbstractRaidTest extends TestCase
         $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
         $raidClass = new $concreteRaid();
         $raidClass->setDrives($drives);
+        $this->assertSame(1024, $raidClass->getMinimumDriveSize(['withHotSpares' => true]));
+        $this->assertSame(1024, $raidClass->getMinimumDriveSize(['withHotSpares' => false]));
+
         $raidClass->addHotSpare($hotSpare);
         $this->assertSame(512, $raidClass->getMinimumDriveSize(['withHotSpares' => true]));
+        $this->assertSame(1024, $raidClass->getMinimumDriveSize(['withHotSpares' => false]));
+    }
+
+    public function testGetMaximumDriveSizeWithHotSpare()
+    {
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(2048, 'ssd', 2),
+            new Drive(2048, 'ssd', 3),
+        ];
+
+        $hotSpare = new Drive(4096, 'ssd', 4);
+
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+        $raidClass->setDrives($drives);
+        $this->assertSame(2048, $raidClass->getMaximumDriveSize(['withHotSpares' => false]));
+        $this->assertSame(2048, $raidClass->getMaximumDriveSize(['withHotSpares' => true]));
+
+        $raidClass->addHotSpare($hotSpare);
+        $this->assertSame(2048, $raidClass->getMaximumDriveSize(['withHotSpares' => false]));
+        $this->assertSame(4096, $raidClass->getMaximumDriveSize(['withHotSpares' => true]));
     }
 
     public function testAddDrive()
@@ -331,5 +355,54 @@ class AbstractRaidTest extends TestCase
 
         $raidClass->setDrives($drives);
         $this->assertTrue($raidClass->validDriveCount());
+    }
+
+    public function testGetNumberOfDrivesOfThisCapacity()
+    {
+        $drives = [
+            new Drive(1024, 'ssd', 1),
+            new Drive(2048, 'ssd', 2),
+            new Drive(2048, 'ssd', 3),
+            new Drive(2048, 'ssd', 4),
+            new Drive(2048, 'ssd', 5, ['hotSpare' => true]),
+        ];
+
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+        /* Basically this is a Raid 10 with 4 drives and one hot spare */
+        $this->setProtectedProperty($raidClass, 'minimumDrives', 4);
+        $this->setProtectedProperty($raidClass, 'mirrored', true);
+
+        $raidClass->setDrives($drives);
+        $this->assertSame(1, $raidClass->getNumberOfDrivesOfThisCapacity(1024, array('withHotSpares' => true)));
+        $this->assertSame(1, $raidClass->getNumberOfDrivesOfThisCapacity(1024, array('withHotSpares' => false)));
+        $this->assertSame(3, $raidClass->getNumberOfDrivesOfThisCapacity(2048, array('withHotSpares' => false)));
+        $this->assertSame(4, $raidClass->getNumberOfDrivesOfThisCapacity(2048, array('withHotSpares' => true)));
+    }
+
+    public function testGetNextMaximumDriveCapacity()
+    {
+        $drives = [
+            new Drive(1024, 'ssd', 1, ['hotSpare' => true]),
+            new Drive(2048, 'ssd', 2),
+            new Drive(2048, 'ssd', 3),
+            new Drive(4096, 'ssd', 4, ['hotSpare' => true]),
+        ];
+
+        $concreteRaid = $this->getMockForAbstractClass(AbstractRaid::class);
+        $raidClass = new $concreteRaid();
+        /* Basically this is a Raid 10 with 4 drives and one hot spare */
+        $this->setProtectedProperty($raidClass, 'minimumDrives', 4);
+        $this->setProtectedProperty($raidClass, 'mirrored', true);
+
+        $raidClass->setDrives($drives);
+        $this->assertSame(0, $raidClass->getNextMaximumDriveCapacity(1024, array('withHotSpares' => true)));
+        $this->assertSame(0, $raidClass->getNextMaximumDriveCapacity(1024, array('withHotSpares' => false)));
+        $this->assertSame(1024, $raidClass->getNextMaximumDriveCapacity(2048, array('withHotSpares' => true)));
+        $this->assertSame(0, $raidClass->getNextMaximumDriveCapacity(2048, array('withHotSpares' => false)));
+        $this->assertSame(2048, $raidClass->getNextMaximumDriveCapacity(4096, array('withHotSpares' => true)));
+        $this->assertSame(2048, $raidClass->getNextMaximumDriveCapacity(4096, array('withHotSpares' => false)));
+        $this->assertSame(4096, $raidClass->getNextMaximumDriveCapacity(8192, array('withHotSpares' => true)));
+        $this->assertSame(2048, $raidClass->getNextMaximumDriveCapacity(8192, array('withHotSpares' => false)));
     }
 }
